@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Territorio y Estado — Dashboard Educativo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1117; --bg2: #161b22; --bg3: #1c2330;
+  --surface: #1e2736; --surface2: #243044;
+  --border: rgba(100,160,220,.15); --border2: rgba(100,160,220,.28);
+  --text: #cdd9e8; --text2: #8b9ab0; --text3: #5a6a80;
+  --accent: #4a9eff; --accent2: #2d7de8; --accent-glow: rgba(74,158,255,.2);
+  --gold: #e8c244; --gold2: #f5d060; --gold-glow: rgba(232,194,68,.2);
+  --red: #e85050; --red2: #ff6060; --red-glow: rgba(232,80,80,.2);
+  --green: #3dba7a; --green2: #4dd88a; --green-glow: rgba(61,186,122,.2);
+  --violet: #9d6fff; --violet2: #b490ff; --violet-glow: rgba(157,111,255,.2);
+  --orange: #f0843a; --orange2: #ff9a50;
+  --white: #e8eef5; --col: 1fr;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  font-family:'Lora',serif;
+  color:var(--text);
+  min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 10% 10%, rgba(74,158,255,.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 80%, rgba(157,111,255,.04) 0%, transparent 60%);
+}
+
+/* ══ HEADER ══ */
+.header{
+  background:linear-gradient(135deg,#0a0f18 0%,#0d1520 60%,#0a1018 100%);
+  border-bottom:1px solid var(--border2);
+  padding:2.5rem 2rem 2rem; position:relative; overflow:hidden;
+}
+.header::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(74,158,255,.04) 59px,rgba(74,158,255,.04) 60px),
+    repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(74,158,255,.03) 59px,rgba(74,158,255,.03) 60px);
+}
+.header-inner{max-width:1200px;margin:0 auto;position:relative;z-index:1;}
+.header-flag{
+  display:inline-flex;align-items:center;gap:.7rem;
+  background:rgba(74,158,255,.08);border:1px solid rgba(74,158,255,.25);
+  border-radius:3px;padding:.35rem 1rem;margin-bottom:1.2rem;
+}
+.flag-stripe{width:12px;height:16px;display:flex;flex-direction:column;gap:1px;}
+.flag-stripe span{flex:1;border-radius:1px;}
+.flag-stripe span:nth-child(1){background:#f5d060;}
+.flag-stripe span:nth-child(2){background:#4a9eff;}
+.flag-stripe span:nth-child(3){background:#e85050;}
+.header-tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);letter-spacing:3px;text-transform:uppercase;}
+.header h1{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(2rem,5vw,3.8rem);
+  color:var(--white);line-height:1;letter-spacing:-1px;
+  text-shadow:0 0 60px rgba(74,158,255,.25);
+}
+.header h1 em{font-style:normal;color:var(--accent);}
+.header-sub{
+  font-family:'Lora',serif;font-style:italic;
+  color:var(--text2);font-size:1rem;margin-top:.5rem;
+}
+.header-chips{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.3rem;}
+.chip{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:100px;padding:.3rem .9rem;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;
+  color:var(--text2);letter-spacing:.5px;
+}
+.chip.a{border-color:rgba(74,158,255,.4);color:var(--accent);}
+.chip.g{border-color:rgba(61,186,122,.4);color:var(--green);}
+.chip.v{border-color:rgba(157,111,255,.4);color:var(--violet);}
+.chip.o{border-color:rgba(240,132,58,.4);color:var(--orange);}
+
+/* ══ NAV ══ */
+.nav-wrap{
+  position:sticky;top:0;z-index:50;
+  background:rgba(13,17,23,.96);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;overflow-x:auto;
+  padding:0 1rem;
+}
+.nav-btn{
+  background:none;border:none;border-bottom:2px solid transparent;
+  font-family:'Syne',sans-serif;font-weight:600;font-size:.72rem;
+  letter-spacing:1px;text-transform:uppercase;
+  color:var(--text3);padding:.9rem 1.1rem;cursor:pointer;
+  white-space:nowrap;transition:all .25s;margin-bottom:-1px;
+}
+.nav-btn:hover{color:var(--text);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-btn .n-num{display:block;font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--text3);margin-bottom:.15rem;text-align:center;}
+.nav-btn.active .n-num{color:var(--accent);}
+
+/* ══ CANVAS ══ */
+.canvas{max-width:1200px;margin:0 auto;padding:2rem 1.5rem 5rem;}
+
+/* ══ SECTIONS ══ */
+.section{display:none;animation:pgIn .35s ease;}
+.section.active{display:block;}
+@keyframes pgIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ══ SECTION HERO ══ */
+.sec-hero{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:8px;padding:2.5rem 2rem;margin-bottom:2rem;
+  position:relative;overflow:hidden;
+}
+.sec-hero::before{
+  content:'';position:absolute;inset:0;border-radius:8px;
+  background:radial-gradient(ellipse at 0% 0%,var(--accent-glow) 0%,transparent 60%);
+  pointer-events:none;
+}
+.sec-hero-tag{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:3px;text-transform:uppercase;
+  color:var(--accent);border:1px solid rgba(74,158,255,.3);
+  padding:.25rem .8rem;border-radius:2px;margin-bottom:1rem;
+  background:rgba(74,158,255,.06);
+}
+.sec-hero h2{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(1.8rem,4vw,3rem);color:var(--white);
+  line-height:1.05;position:relative;
+}
+.sec-hero h2 span{color:var(--accent);}
+.sec-hero-sub{
+  font-family:'Lora',serif;font-style:italic;
+  color:var(--text2);margin-top:.4rem;font-size:1rem;position:relative;
+}
+.sec-hero-intro{
+  font-size:1rem;line-height:1.85;color:var(--text);
+  max-width:780px;margin-top:1.2rem;position:relative;
+}
+.sec-hero-intro strong{color:var(--accent2);font-weight:600;}
+.hero-badge{
+  position:absolute;top:1.5rem;right:1.5rem;
+  font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;
+  color:var(--accent);opacity:.06;line-height:1;user-select:none;
+}
+
+/* ══ SECTION TITLE ══ */
+.sec-title{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;
+  color:var(--white);letter-spacing:.5px;
+  border-left:3px solid var(--accent);padding-left:.8rem;
+  margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem;
+}
+
+/* ══ GRIDS ══ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem;margin-bottom:2rem;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2rem;}
+.span2{grid-column:span 2;}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr;}.g4{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr;}.span2{grid-column:span 1;}}
+
+/* ══ CARDS ══ */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:1.5rem;position:relative;overflow:hidden;
+  transition:all .25s;
+}
+.card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3);}
+.card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;}
+.card.ca::after{background:var(--accent);} .card.cg::after{background:var(--green);}
+.card.cv::after{background:var(--violet);} .card.cr::after{background:var(--red);}
+.card.co::after{background:var(--orange);} .card.cy::after{background:var(--gold);}
+.card-icon{font-size:2rem;margin-bottom:.8rem;}
+.card-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:.4rem;}
+.card h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--white);margin-bottom:.6rem;}
+.card p{font-size:.9rem;line-height:1.8;color:var(--text2);}
+.card-num{position:absolute;top:.8rem;right:1rem;font-family:'Syne',sans-serif;font-weight:800;font-size:2.5rem;color:var(--border2);line-height:1;}
+.card-expand{max-height:0;overflow:hidden;transition:max-height .45s ease;}
+.card-expand.open{max-height:600px;}
+.card-expand p{padding-top:.7rem;border-top:1px solid var(--border);margin-top:.6rem;font-size:.88rem;line-height:1.78;color:var(--text2);}
+.toggle-btn{
+  background:none;border:1px solid var(--border2);color:var(--text3);
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:1px;
+  padding:.3rem .8rem;cursor:pointer;margin-top:.7rem;border-radius:3px;
+  transition:all .2s;
+}
+.toggle-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ══ STAT CARDS ══ */
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:1.2rem;text-align:center;
+  transition:transform .25s;
+}
+.stat-card:hover{transform:translateY(-3px);}
+.stat-num{font-family:'Syne',sans-serif;font-weight:800;font-size:2rem;line-height:1;margin-bottom:.3rem;}
+.stat-num.ca{color:var(--accent);}
+.stat-num.cg{color:var(--green);}
+.stat-num.cv{color:var(--violet);}
+.stat-num.cr{color:var(--red);}
+.stat-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text3);letter-spacing:1px;line-height:1.4;}
+
+/* ══ PILLARS (accordion) ══ */
+.pillars{display:flex;flex-direction:column;gap:.6rem;}
+.pillar{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:6px;padding:1rem 1.2rem;cursor:pointer;
+  transition:all .25s;position:relative;overflow:hidden;
+}
+.pillar::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;}
+.pillar.pa::before{background:var(--accent);}
+.pillar.pg::before{background:var(--green);}
+.pillar.pv::before{background:var(--violet);}
+.pillar.pr::before{background:var(--red);}
+.pillar.po::before{background:var(--orange);}
+.pillar.py::before{background:var(--gold);}
+.pillar:hover{border-color:var(--border2);}
+.pillar-header{display:flex;align-items:center;gap:.7rem;}
+.pillar-icon{font-size:1.2rem;flex-shrink:0;}
+.pillar-title{font-family:'Syne',sans-serif;font-weight:600;font-size:.9rem;color:var(--white);flex:1;}
+.pillar-arrow{color:var(--text3);font-size:.7rem;transition:transform .3s;flex-shrink:0;}
+.pillar.open .pillar-arrow{transform:rotate(180deg);}
+.pillar-body{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+.pillar.open .pillar-body{max-height:300px;}
+.pillar-body p{font-size:.88rem;line-height:1.78;color:var(--text2);padding-top:.8rem;margin-top:.5rem;border-top:1px solid var(--border);}
+
+/* ══ QUOTE ══ */
+.quote{
+  background:linear-gradient(135deg,rgba(74,158,255,.06),rgba(74,158,255,.03));
+  border:1px solid rgba(74,158,255,.2);border-left:3px solid var(--accent);
+  border-radius:0 6px 6px 0;padding:1.3rem 1.5rem;margin:1.5rem 0;
+  position:relative;
+}
+.quote::before{content:'\201C';position:absolute;top:-.5rem;left:.8rem;font-family:'Lora',serif;font-size:4rem;color:var(--accent);opacity:.3;line-height:1;}
+.quote-text{font-family:'Lora',serif;font-style:italic;font-size:1rem;line-height:1.75;color:var(--text);padding-left:1.5rem;}
+.quote-author{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text3);letter-spacing:1px;margin-top:.5rem;padding-left:1.5rem;}
+
+/* ══ PHASES ══ */
+.phases{display:flex;flex-direction:column;gap:0;}
+.phase{
+  background:var(--surface);border:1px solid var(--border);
+  padding:1.2rem 1.5rem;cursor:pointer;transition:all .2s;
+  position:relative;overflow:hidden;margin-bottom:-1px;
+}
+.phase:first-child{border-radius:8px 8px 0 0;}
+.phase:last-child{border-radius:0 0 8px 8px;margin-bottom:0;}
+.phase:hover{z-index:2;border-color:var(--border2);}
+.phase::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
+.phase.p1::before{background:var(--accent);}
+.phase.p2::before{background:var(--green);}
+.phase.p3::before{background:var(--violet);}
+.phase.p4::before{background:var(--orange);}
+.phase.p5::before{background:var(--gold);}
+.phase-header{display:flex;align-items:center;gap:1rem;}
+.phase-badge{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;
+  flex-shrink:0;
+}
+.p1 .phase-badge{background:rgba(74,158,255,.15);color:var(--accent);}
+.p2 .phase-badge{background:rgba(61,186,122,.15);color:var(--green);}
+.p3 .phase-badge{background:rgba(157,111,255,.15);color:var(--violet);}
+.p4 .phase-badge{background:rgba(240,132,58,.15);color:var(--orange);}
+.p5 .phase-badge{background:rgba(232,194,68,.15);color:var(--gold);}
+.phase-info{flex:1;}
+.phase-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:var(--white);}
+.phase-sub{font-family:'Lora',serif;font-style:italic;font-size:.8rem;color:var(--text3);margin-top:.1rem;}
+.phase-arrow{color:var(--text3);transition:transform .3s;}
+.phase.open .phase-arrow{transform:rotate(180deg);}
+.phase-body{max-height:0;overflow:hidden;transition:max-height .45s ease;}
+.phase.open .phase-body{max-height:500px;}
+.phase-body-inner{padding-top:.9rem;margin-top:.5rem;border-top:1px solid var(--border);}
+.phase-body-inner p{font-size:.88rem;line-height:1.78;color:var(--text2);margin-bottom:.5rem;}
+.phase-body-inner ul{padding-left:1.2rem;}
+.phase-body-inner li{font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:.3rem;}
+
+/* ══ COMPARE TABLE ══ */
+.ctable{width:100%;border-collapse:collapse;margin-bottom:2rem;font-size:.88rem;}
+.ctable th{background:var(--surface2);color:var(--white);font-family:'Syne',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;padding:.8rem 1rem;text-align:left;border:1px solid var(--border);}
+.ctable td{padding:.75rem 1rem;border:1px solid var(--border);background:var(--surface);color:var(--text2);vertical-align:top;line-height:1.5;}
+.ctable tr:hover td{background:var(--surface2);}
+.ctable td:first-child{color:var(--white);font-family:'Syne',sans-serif;font-weight:600;font-size:.82rem;}
+.ctable .hl td{background:rgba(74,158,255,.07);border-color:rgba(74,158,255,.2);}
+
+/* ══ DIAGRAM BOXES ══ */
+.diag-wrap{margin-bottom:2rem;}
+.diag-center{
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  color:white;text-align:center;padding:1.5rem 2rem;
+  border-radius:8px;font-family:'Syne',sans-serif;font-weight:800;
+  font-size:1.2rem;box-shadow:0 0 40px var(--accent-glow);
+  margin-bottom:1.2rem;position:relative;overflow:hidden;
+}
+.diag-center::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);border-radius:8px;}
+.diag-center p{font-family:'Lora',serif;font-style:italic;font-size:.85rem;color:rgba(255,255,255,.8);margin-top:.3rem;font-weight:400;}
+.diag-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+@media(max-width:700px){.diag-cols{grid-template-columns:1fr;}}
+.diag-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:6px;padding:1rem;position:relative;
+}
+.diag-item::before{content:'↑';position:absolute;top:-.8rem;left:50%;transform:translateX(-50%);color:var(--accent);font-size:.9rem;}
+.diag-item.arrow-none::before{display:none;}
+.diag-label{font-family:'Syne',sans-serif;font-weight:700;font-size:.8rem;color:var(--white);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem;}
+.diag-item p{font-size:.82rem;color:var(--text2);line-height:1.65;}
+
+/* ══ INFO BOX ══ */
+.info-box{
+  background:rgba(74,158,255,.05);border:1px solid rgba(74,158,255,.2);
+  border-radius:6px;padding:1rem 1.4rem;margin-bottom:2rem;
+  font-size:.93rem;line-height:1.8;color:var(--text);
+}
+.info-box strong{color:var(--accent);}
+.info-box.green{background:rgba(61,186,122,.05);border-color:rgba(61,186,122,.2);}
+.info-box.green strong{color:var(--green);}
+.info-box.violet{background:rgba(157,111,255,.05);border-color:rgba(157,111,255,.2);}
+.info-box.violet strong{color:var(--violet);}
+.info-box.orange{background:rgba(240,132,58,.05);border-color:rgba(240,132,58,.2);}
+.info-box.orange strong{color:var(--orange);}
+.info-box.gold{background:rgba(232,194,68,.05);border-color:rgba(232,194,68,.2);}
+.info-box.gold strong{color:var(--gold);}
+
+/* ══ TIMELINE ══ */
+.timeline{position:relative;padding-left:2rem;}
+.timeline::before{content:'';position:absolute;left:.5rem;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,var(--accent),var(--accent),transparent);}
+.tl-item{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.3rem;margin-bottom:1rem;cursor:pointer;transition:all .25s;}
+.tl-item:hover{border-color:var(--border2);transform:translateX(4px);}
+.tl-item::before{content:'';position:absolute;left:-1.6rem;top:1.2rem;width:10px;height:10px;background:var(--accent);border-radius:50%;border:2px solid var(--bg);box-shadow:0 0 0 2px var(--accent);}
+.tl-year{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--accent);margin-bottom:.2rem;}
+.tl-title{font-family:'Syne',sans-serif;font-weight:600;font-size:.85rem;color:var(--white);margin-bottom:.3rem;}
+.tl-desc{font-size:.85rem;color:var(--text2);line-height:1.65;}
+.tl-expand{max-height:0;overflow:hidden;transition:max-height .4s;font-size:.85rem;color:var(--text2);line-height:1.7;}
+.tl-item.open .tl-expand{max-height:200px;padding-top:.5rem;}
+.tl-arr{float:right;color:var(--text3);font-size:.7rem;transition:transform .3s;}
+.tl-item.open .tl-arr{transform:rotate(180deg);}
+
+/* ══ BADGE STRIP ══ */
+.badge-strip{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem;}
+.badge{
+  border-radius:100px;padding:.3rem .9rem;
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.5px;
+}
+.badge.ba{background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.3);color:var(--accent);}
+.badge.bg{background:rgba(61,186,122,.12);border:1px solid rgba(61,186,122,.3);color:var(--green);}
+.badge.bv{background:rgba(157,111,255,.12);border:1px solid rgba(157,111,255,.3);color:var(--violet);}
+.badge.br{background:rgba(232,80,80,.12);border:1px solid rgba(232,80,80,.3);color:var(--red);}
+.badge.bo{background:rgba(240,132,58,.12);border:1px solid rgba(240,132,58,.3);color:var(--orange);}
+.badge.by{background:rgba(232,194,68,.12);border:1px solid rgba(232,194,68,.3);color:var(--gold);}
+
+/* ══ TRIANGLE DIAGRAM (Power-Territory-Citizenship) ══ */
+.triangle-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:2rem;margin-bottom:2rem;text-align:center;}
+.triangle-svg{max-width:480px;margin:0 auto 1.5rem;display:block;}
+.triangle-nodes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem;}
+.tri-node{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:1.2rem;}
+.tri-node-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;margin-bottom:.4rem;}
+.tri-node p{font-size:.82rem;color:var(--text2);line-height:1.6;}
+
+/* ══ QUIZ ══ */
+.quiz-box{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:2rem;box-shadow:0 4px 30px rgba(0,0,0,.3);}
+.qprog{display:flex;align-items:center;gap:1rem;margin-bottom:1.8rem;}
+.qbar{flex:1;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.qbar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--violet));transition:width .4s;}
+.qlabel{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text3);white-space:nowrap;}
+.qtext{font-family:'Lora',serif;font-size:1.1rem;color:var(--white);line-height:1.55;margin-bottom:1.5rem;}
+.qopts{display:flex;flex-direction:column;gap:.7rem;}
+.qopt{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);padding:.9rem 1.2rem;text-align:left;cursor:pointer;
+  border-radius:6px;font-family:'Lora',serif;font-size:.95rem;
+  transition:all .2s;display:flex;align-items:center;gap:.9rem;
+}
+.qopt:hover:not(:disabled){background:var(--surface2);border-color:var(--border2);transform:translateX(4px);}
+.qopt.correct{background:rgba(61,186,122,.1);border-color:var(--green2);color:var(--green2);}
+.qopt.wrong{background:rgba(232,80,80,.1);border-color:var(--red2);color:var(--red2);}
+.qopt:disabled{cursor:default;}
+.qletter{width:28px;height:28px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text3);flex-shrink:0;}
+.qfb{padding:1rem 1.2rem;border-radius:6px;font-size:.9rem;line-height:1.65;display:none;margin-top:1rem;}
+.qfb.show{display:block;}
+.qfb.c{background:rgba(61,186,122,.08);border:1px solid rgba(61,186,122,.3);color:var(--green2);}
+.qfb.w{background:rgba(232,80,80,.07);border:1px solid rgba(232,80,80,.3);color:var(--red2);}
+.qnext{background:var(--accent);border:none;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:1px;padding:.8rem 1.8rem;cursor:pointer;border-radius:5px;margin-top:1rem;display:none;transition:all .25s;}
+.qnext.show{display:inline-block;}
+.qnext:hover{background:var(--accent2);transform:translateY(-2px);}
+.qfinal{text-align:center;padding:2.5rem;display:none;}
+.qfinal.show{display:block;}
+.qf-score{font-family:'Syne',sans-serif;font-weight:800;font-size:5rem;line-height:1;margin:.5rem 0;background:linear-gradient(135deg,var(--accent),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.qf-rank{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:.8rem;}
+.qf-msg{font-family:'Lora',serif;font-style:italic;font-size:1rem;color:var(--text2);line-height:1.7;margin-bottom:2rem;}
+.qf-retry{background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:'Syne',sans-serif;font-weight:700;padding:.9rem 2.5rem;cursor:pointer;border-radius:6px;font-size:.85rem;letter-spacing:1px;transition:all .25s;}
+.qf-retry:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+.qnum-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);letter-spacing:2px;margin-bottom:.6rem;text-transform:uppercase;}
+
+/* ══ SCORE TRACKER ══ */
+.tracker{position:fixed;bottom:1.2rem;right:1.2rem;z-index:80;background:var(--bg2);border:1px solid var(--accent);border-radius:8px;padding:.7rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text3);letter-spacing:1px;display:none;box-shadow:0 4px 20px rgba(0,0,0,.4);}
+.tracker span{font-family:'Syne',sans-serif;font-size:1.2rem;color:var(--accent);display:block;}
+
+/* ══ DIVIDER ══ */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:2rem 0;}
+
+/* ══ TWO-COL COMPARE ══ */
+.vs-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:1.2rem;align-items:start;margin-bottom:2rem;}
+.vs-col{display:flex;flex-direction:column;gap:.7rem;}
+.vs-sep{display:flex;flex-direction:column;justify-content:center;align-items:center;padding-top:3rem;}
+.vs-sep-line{width:1px;height:60px;background:linear-gradient(180deg,transparent,var(--border2),transparent);}
+.vs-sep-dot{width:32px;height:32px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:.75rem;font-weight:800;color:var(--text3);}
+.vs-header{background:var(--surface2);border:1px solid var(--border2);border-radius:8px 8px 0 0;padding:.9rem 1.2rem;text-align:center;}
+.vs-header.blue .title{color:var(--accent);}
+.vs-header.green .title{color:var(--green);}
+.vs-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;}
+.vs-sub{font-family:'Lora',serif;font-style:italic;font-size:.78rem;color:var(--text3);margin-top:.2rem;}
+.vs-item{background:var(--surface);border:1px solid var(--border);border-radius:0;padding:.9rem 1.1rem;font-size:.88rem;line-height:1.7;color:var(--text2);}
+.vs-item:last-child{border-radius:0 0 6px 6px;}
+.vs-item strong{color:var(--white);font-family:'Syne',sans-serif;font-weight:600;display:block;font-size:.8rem;margin-bottom:.2rem;}
+@media(max-width:600px){.vs-wrap{grid-template-columns:1fr;}.vs-sep{flex-direction:row;padding:0;}.vs-sep-line{width:60px;height:1px;}.vs-sep-dot{flex-shrink:0;}}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-flag">
+      <div class="flag-stripe"><span></span><span></span><span></span></div>
+      <div class="header-tag">Ciencias Sociales · Colombia</div>
+    </div>
+    <h1><em>Territorio</em> y Estado</h1>
+    <div class="header-sub">Organización política, poder y ciudadanía en el mundo contemporáneo</div>
+    <div class="header-chips">
+      <span class="chip a">Territorio</span>
+      <span class="chip g">Estado</span>
+      <span class="chip v">Ciudadanía</span>
+      <span class="chip a">Centralización</span>
+      <span class="chip o">Descentralización</span>
+      <span class="chip">Poder político</span>
+      <span class="chip g">Democracia</span>
+      <span class="chip">Colombia</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav-wrap" id="nav">
+  <button class="nav-btn active" onclick="goSec('territorio',this)">
+    <span class="n-num">01</span>Territorio y Estado
+  </button>
+  <button class="nav-btn" onclick="goSec('organizacion',this)">
+    <span class="n-num">02</span>Organización Política
+  </button>
+  <button class="nav-btn" onclick="goSec('central',this)">
+    <span class="n-num">03</span>Centralización vs Desc.
+  </button>
+  <button class="nav-btn" onclick="goSec('triada',this)">
+    <span class="n-num">04</span>Territorio–Poder–Ciudadanía
+  </button>
+  <button class="nav-btn" onclick="goSec('quiz',this)">
+    <span class="n-num">★</span>Evaluación
+  </button>
+</nav>
+
+<div class="canvas">
+
+<!-- ═══════════════════════════════════
+     01 — TERRITORIO Y ESTADO
+═══════════════════════════════════ -->
+<div class="section active" id="sec-territorio">
+
+  <div class="sec-hero">
+    <div class="hero-badge">01</div>
+    <div class="sec-hero-tag">Módulo 01 · Conceptos Fundamentales</div>
+    <h2>Territorio <span>y Estado</span></h2>
+    <div class="sec-hero-sub">¿Qué es un Estado? ¿Cómo se relaciona con el territorio que ocupa?</div>
+    <p class="sec-hero-intro">
+      El <strong>Estado</strong> es la forma de organización política más importante del mundo moderno. Para que un Estado exista necesita tres elementos inseparables: un <strong>territorio</strong> (espacio físico), una <strong>población</strong> (personas que lo habitan) y un <strong>gobierno</strong> (autoridad que lo dirige). Sin cualquiera de los tres, no hay Estado.
+    </p>
+  </div>
+
+  <div class="badge-strip">
+    <span class="badge ba">Soberanía</span>
+    <span class="badge bg">Territorio nacional</span>
+    <span class="badge bv">Constitución</span>
+    <span class="badge bo">Gobierno</span>
+    <span class="badge by">Nación</span>
+    <span class="badge br">Fronteras</span>
+  </div>
+
+  <div class="g4" style="margin-bottom:2rem">
+    <div class="stat-card">
+      <div class="stat-num ca">195</div>
+      <div class="stat-label">Estados reconocidos por la ONU en el mundo</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num cg">3</div>
+      <div class="stat-label">Elementos esenciales del Estado: territorio, población y gobierno</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num cv">1991</div>
+      <div class="stat-label">Año de la Constitución Política de Colombia vigente</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num cr">32</div>
+      <div class="stat-label">Departamentos que conforman el territorio colombiano</div>
+    </div>
+  </div>
+
+  <div class="sec-title">Los 3 Elementos del Estado</div>
+  <div class="g3" style="margin-bottom:2rem">
+    <div class="card ca">
+      <div class="card-num">01</div>
+      <div class="card-icon">🗺️</div>
+      <div class="card-label">Elemento 1</div>
+      <h3>El Territorio</h3>
+      <p>Es el espacio físico sobre el cual el Estado ejerce su soberanía. No solo es la tierra firme: incluye el mar territorial, el espacio aéreo, los ríos y el subsuelo.</p>
+      <div class="card-expand"><p>El territorio es la "casa" del Estado. Sin fronteras definidas y reconocidas por otros países, un Estado no puede existir plenamente. Colombia tiene territorio continental, islas en el Caribe (San Andrés) y en el Pacífico, zona económica exclusiva marítima y espacio aéreo. Todos estos espacios están bajo soberanía colombiana.</p></div>
+      <button class="toggle-btn" onclick="toggleCard(this)">VER MÁS ▾</button>
+    </div>
+    <div class="card cg">
+      <div class="card-num">02</div>
+      <div class="card-icon">👥</div>
+      <div class="card-label">Elemento 2</div>
+      <h3>La Población</h3>
+      <p>Son las personas que viven en el territorio. Hay dos conceptos clave: <em>nación</em> (comunidad cultural) y <em>pueblo</em> (conjunto de ciudadanos con derechos políticos).</p>
+      <div class="card-expand"><p>La diferencia entre Estado y Nación es importante. Una nación es una comunidad unida por historia, idioma y cultura compartida. Un Estado es la organización política. Pueden no coincidir: hay naciones sin Estado (el pueblo kurdo) y Estados con varias naciones (España tiene catalanes, vascos, gallegos...). Colombia es un Estado pluriétnico y multicultural.</p></div>
+      <button class="toggle-btn" onclick="toggleCard(this)">VER MÁS ▾</button>
+    </div>
+    <div class="card cv">
+      <div class="card-num">03</div>
+      <div class="card-icon">🏛️</div>
+      <div class="card-label">Elemento 3</div>
+      <h3>El Gobierno</h3>
+      <p>Es la estructura de poder que dirige el Estado, crea leyes y garantiza el orden. Se organiza en tres ramas para evitar que alguien acumule demasiado poder.</p>
+      <div class="card-expand"><p>La separación de poderes (Montesquieu, siglo XVIII) es fundamental en las democracias. En Colombia: la Rama Legislativa (Congreso) hace las leyes; la Rama Ejecutiva (Presidente y ministros) gobierna; la Rama Judicial (Cortes y jueces) aplica justicia. Ninguna rama puede dominar a las otras.</p></div>
+      <button class="toggle-btn" onclick="toggleCard(this)">VER MÁS ▾</button>
+    </div>
+  </div>
+
+  <div class="sec-title">Estado vs. Nación vs. País — ¿Son lo mismo?</div>
+  <div class="info-box" style="margin-bottom:1.2rem">
+    💡 <strong>Diferencia clave:</strong> Aunque usamos estas palabras como sinónimos en el habla cotidiana, tienen significados distintos en Ciencias Sociales. Es importante distinguirlas.
+  </div>
+  <div class="g3" style="margin-bottom:2rem">
+    <div class="card ca">
+      <div class="card-icon">🏛️</div>
+      <div class="card-label">Concepto Político</div>
+      <h3>Estado</h3>
+      <p>Organización política y jurídica que ejerce soberanía sobre un territorio. Tiene instituciones (gobierno, leyes, ejército, tribunales). <em>Ejemplo: El Estado Colombiano.</em></p>
+    </div>
+    <div class="card cg">
+      <div class="card-icon">🌿</div>
+      <div class="card-label">Concepto Cultural</div>
+      <h3>Nación</h3>
+      <p>Comunidad humana unida por lazos culturales: idioma, historia, tradiciones. Puede existir sin un Estado propio. <em>Ejemplo: La nación palestina, el pueblo wayuu.</em></p>
+    </div>
+    <div class="card cv">
+      <div class="card-icon">🗺️</div>
+      <div class="card-label">Concepto Geográfico</div>
+      <h3>País</h3>
+      <p>Término geográfico que designa un territorio con identidad propia. Es más informal y generalmente coincide con el Estado. <em>Ejemplo: Colombia como país.</em></p>
+    </div>
+  </div>
+
+  <div class="sec-title">¿Qué es la Soberanía?</div>
+  <div class="g2">
+    <div>
+      <div class="pillars">
+        <div class="pillar pa" onclick="togglePillar(this)">
+          <div class="pillar-header"><span class="pillar-icon">👑</span><span class="pillar-title">Soberanía Interna</span><span class="pillar-arrow">▾</span></div>
+          <div class="pillar-body"><p>El Estado tiene autoridad suprema dentro de su territorio. Ninguna persona, empresa o grupo puede estar por encima de la ley del Estado. El monopolio legítimo de la fuerza (ejército y policía) garantiza esta soberanía.</p></div>
+        </div>
+        <div class="pillar pg" onclick="togglePillar(this)">
+          <div class="pillar-header"><span class="pillar-icon">🌐</span><span class="pillar-title">Soberanía Externa</span><span class="pillar-arrow">▾</span></div>
+          <div class="pillar-body"><p>El Estado es independiente frente a otros Estados. No puede ser dominado ni dirigido desde el exterior. Los Estados se reconocen mutuamente como iguales en el derecho internacional. Principio de no intervención en asuntos internos.</p></div>
+        </div>
+        <div class="pillar pv" onclick="togglePillar(this)">
+          <div class="pillar-header"><span class="pillar-icon">🗳️</span><span class="pillar-title">Soberanía Popular (Democracia)</span><span class="pillar-arrow">▾</span></div>
+          <div class="pillar-body"><p>En los sistemas democráticos, la soberanía no reside en el rey ni en el gobierno, sino en el pueblo. Art. 3 de la Constitución colombiana: "La soberanía reside exclusivamente en el pueblo, del cual emana el poder público." Esto significa que los ciudadanos son los que legitiman el poder mediante el voto.</p></div>
+        </div>
+        <div class="pillar po" onclick="togglePillar(this)">
+          <div class="pillar-header"><span class="pillar-icon">⚠️</span><span class="pillar-title">Límites a la Soberanía</span><span class="pillar-arrow">▾</span></div>
+          <div class="pillar-body"><p>En el mundo globalizado, la soberanía tiene límites. Los tratados internacionales (como los de derechos humanos) obligan a los Estados aunque su gobierno no quiera. La Corte Penal Internacional puede juzgar a líderes de Estado por crímenes graves. Esto genera debates: ¿dónde termina la soberanía y empieza el deber internacional?</p></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="quote" style="margin-top:0">
+        <p class="quote-text">Colombia es un Estado social de derecho, organizado en forma de república unitaria, descentralizada, con autonomía de sus entidades territoriales, democrática, participativa y pluralista, fundada en el respeto de la dignidad humana.</p>
+        <p class="quote-author">— Artículo 1°, Constitución Política de Colombia (1991)</p>
+      </div>
+      <div class="info-box gold" style="margin-top:1rem">
+        🇨🇴 <strong>Colombia en concreto:</strong> Nuestra Constitución define al Estado colombiano como "social de derecho". Esto significa que el Estado no solo garantiza libertades, sino que también tiene la obligación de asegurar educación, salud, vivienda digna y trabajo a sus ciudadanos.
+      </div>
+    </div>
+  </div>
+
+</div><!-- /territorio -->
+
+<!-- ═══════════════════════════════════
+     02 — ORGANIZACIÓN POLÍTICA
+═══════════════════════════════════ -->
+<div class="section" id="sec-organizacion">
+
+  <div class="sec-hero" style="--sec-color:var(--green);">
+    <div class="hero-badge" style="color:var(--green);">02</div>
+    <div class="sec-hero-tag" style="color:var(--green);border-color:rgba(61,186,122,.3);background:rgba(61,186,122,.06);">Módulo 02 · Estructuras de Gobierno</div>
+    <h2>Organización <span style="color:var(--green)">Política</span> del Territorio</h2>
+    <div class="sec-hero-sub">¿Cómo se divide y se gobierna el territorio de un Estado?</div>
+    <p class="sec-hero-intro">
+      Todo Estado necesita <strong>organizar políticamente su territorio</strong> para gobernar de manera eficiente. La organización política define cómo se distribuye el poder entre el gobierno central y los gobiernos locales, cómo se dividen las regiones y quién toma las decisiones sobre cada área del territorio.
+    </p>
+  </div>
+
+  <div class="sec-title">Formas de Estado según la Organización del Territorio</div>
+  <div class="info-box green">
+    📌 <strong>Pregunta clave:</strong> ¿El poder está concentrado en el centro o repartido entre las regiones? Esta es la gran pregunta de la organización territorial.
+  </div>
+
+  <div class="phases" style="margin-bottom:2rem" id="formas-estado">
+    <div class="phase p1" onclick="togglePhase(this)">
+      <div class="phase-header">
+        <div class="phase-badge">1</div>
+        <div class="phase-info">
+          <div class="phase-title">Estado Unitario — El poder concentrado en el centro</div>
+          <div class="phase-sub">Un solo gobierno central dirige todo el país · Ejemplo: Colombia, Francia, Chile</div>
+        </div>
+        <span class="phase-arrow">▾</span>
+      </div>
+      <div class="phase-body"><div class="phase-body-inner">
+        <p>En un Estado unitario existe <strong>un solo centro de poder político</strong>: el gobierno nacional. Las regiones, departamentos o municipios existen, pero su autonomía es limitada: dependen del gobierno central, que puede intervenir en sus asuntos.</p>
+        <ul>
+          <li><strong>Una sola Constitución</strong> rige para todo el país.</li>
+          <li><strong>Un solo parlamento</strong> nacional hace las leyes para todos.</li>
+          <li>Los gobiernos locales pueden tener cierta autonomía, pero la ley nacional siempre está por encima.</li>
+          <li>Colombia es un Estado unitario "descentralizado con autonomía regional" — veremos esto en detalle en el módulo 03.</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="phase p2" onclick="togglePhase(this)">
+      <div class="phase-header">
+        <div class="phase-badge">2</div>
+        <div class="phase-info">
+          <div class="phase-title">Estado Federal — El poder compartido con las regiones</div>
+          <div class="phase-sub">Los estados o provincias tienen gran autonomía · Ejemplo: EE.UU., Alemania, Brasil, México</div>
+        </div>
+        <span class="phase-arrow">▾</span>
+      </div>
+      <div class="phase-body"><div class="phase-body-inner">
+        <p>En un Estado federal, el poder se divide entre el <strong>gobierno federal (nacional)</strong> y los <strong>estados o provincias</strong>. Cada estado tiene su propio gobierno, parlamento, leyes e incluso policía.</p>
+        <ul>
+          <li>Hay una Constitución federal, pero cada estado puede tener su propia constitución.</li>
+          <li>El gobierno federal maneja asuntos comunes (defensa, moneda, relaciones exteriores).</li>
+          <li>Los estados manejan temas locales: educación, policía, impuestos propios.</li>
+          <li><strong>Ventaja:</strong> mayor autonomía regional. <strong>Desventaja:</strong> puede generar desigualdades entre regiones.</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="phase p3" onclick="togglePhase(this)">
+      <div class="phase-header">
+        <div class="phase-badge">3</div>
+        <div class="phase-info">
+          <div class="phase-title">Estado Confederal — Alianza de Estados independientes</div>
+          <div class="phase-sub">Varios Estados soberanos se unen voluntariamente · Ejemplo: Unión Europea (parcialmente)</div>
+        </div>
+        <span class="phase-arrow">▾</span>
+      </div>
+      <div class="phase-body"><div class="phase-body-inner">
+        <p>Una confederación es una <strong>alianza voluntaria de Estados soberanos</strong> que ceden algunas competencias a un organismo común, pero conservan su independencia plena. Cada Estado puede salir de la confederación cuando quiera.</p>
+        <ul>
+          <li>Los Estados miembros siguen siendo soberanos e independientes.</li>
+          <li>El poder central es débil y depende de la aprobación de los Estados miembros.</li>
+          <li>Ejemplo histórico: Los primeros Estados Unidos bajo los Artículos de la Confederación (1781-1789) antes de la Constitución federal.</li>
+          <li>La Unión Europea es un caso moderno similar: los países son soberanos pero comparten moneda, parlamento y mercado.</li>
+        </ul>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="sec-title">Organización Territorial de Colombia</div>
+  <div class="info-box green" style="margin-bottom:1.5rem">
+    🇨🇴 <strong>Colombia:</strong> Es una <strong>República unitaria, descentralizada</strong>. El poder central (en Bogotá) es el más importante, pero departamentos y municipios tienen gobiernos propios con recursos y competencias propias.
+  </div>
+
+  <div class="g3" style="margin-bottom:2rem">
+    <div class="card cy">
+      <div class="card-icon">🏛️</div>
+      <div class="card-label">Nivel Nacional</div>
+      <h3>Gobierno Nacional</h3>
+      <p>El Presidente de la República, el Congreso y las Cortes. Hacen las políticas y leyes que rigen <em>todo</em> el país: defensa, relaciones exteriores, salud pública, educación básica.</p>
+    </div>
+    <div class="card ca">
+      <div class="card-icon">🗾</div>
+      <div class="card-label">Nivel Departamental</div>
+      <h3>Departamentos (32)</h3>
+      <p>Cada departamento tiene un Gobernador (elegido por voto) y una Asamblea Departamental. Gestionan salud de nivel medio, vías secundarias y educación secundaria.</p>
+    </div>
+    <div class="card cg">
+      <div class="card-icon">🏘️</div>
+      <div class="card-label">Nivel Municipal</div>
+      <h3>Municipios (1.102)</h3>
+      <p>El nivel más cercano al ciudadano. El Alcalde y el Concejo Municipal gestionan servicios locales: acueducto, vías urbanas, educación primaria, planeación local.</p>
+    </div>
+  </div>
+
+  <div class="sec-title">Ramas del Poder Público en Colombia</div>
+  <div class="diag-wrap">
+    <div class="diag-center">
+      Estado Colombiano — Poder Público
+      <p>Art. 113 Constitución: "Son ramas del poder público, la legislativa, la ejecutiva y la judicial."</p>
+    </div>
+    <div class="diag-cols">
+      <div class="diag-item">
+        <div class="diag-label" style="color:var(--accent)">🏛️ Rama Legislativa</div>
+        <p><strong>¿Quiénes?</strong> El Congreso: Senado (108 senadores) + Cámara de Representantes (188 representantes).<br><strong>¿Qué hace?</strong> Crea, modifica y deroga las leyes. Controla y vigila al gobierno.</p>
+      </div>
+      <div class="diag-item">
+        <div class="diag-label" style="color:var(--green)">⚙️ Rama Ejecutiva</div>
+        <p><strong>¿Quiénes?</strong> El Presidente, Vicepresidente, ministros y entidades públicas.<br><strong>¿Qué hace?</strong> Gobierna el país, ejecuta las leyes, maneja las finanzas del Estado y dirige la política exterior.</p>
+      </div>
+      <div class="diag-item">
+        <div class="diag-label" style="color:var(--violet)">⚖️ Rama Judicial</div>
+        <p><strong>¿Quiénes?</strong> Corte Suprema, Consejo de Estado, Corte Constitucional, Fiscalía, jueces.<br><strong>¿Qué hace?</strong> Administra justicia, resuelve conflictos y protege los derechos de los ciudadanos.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sec-title">Formas de Gobierno: ¿Cómo se ejerce el poder?</div>
+  <div class="g2" style="margin-bottom:1.5rem">
+    <div class="pillars">
+      <div class="pillar pa" onclick="togglePillar(this)">
+        <div class="pillar-header"><span class="pillar-icon">🗳️</span><span class="pillar-title">Democracia</span><span class="pillar-arrow">▾</span></div>
+        <div class="pillar-body"><p>El poder viene del pueblo. Los ciudadanos eligen a sus gobernantes mediante elecciones libres y periódicas. Existen garantías para las minorías y derechos fundamentales protegidos. Puede ser directa (el pueblo vota cada decisión) o representativa (elige representantes que deciden).</p></div>
+      </div>
+      <div class="pillar pg" onclick="togglePillar(this)">
+        <div class="pillar-header"><span class="pillar-icon">👑</span><span class="pillar-title">Monarquía Constitucional</span><span class="pillar-arrow">▾</span></div>
+        <div class="pillar-body"><p>Un rey o reina es el jefe de Estado por herencia, pero su poder está limitado por una Constitución y un Parlamento elegido. El verdadero gobierno lo ejerce el Primer Ministro. Ejemplos: España, Reino Unido, Suecia, Japón. El rey es símbolo de unidad nacional, no dictador.</p></div>
+      </div>
+      <div class="pillar pv" onclick="togglePillar(this)">
+        <div class="pillar-header"><span class="pillar-icon">✊</span><span class="pillar-title">Autocracia / Dictadura</span><span class="pillar-arrow">▾</span></div>
+        <div class="pillar-body"><p>El poder lo ejerce una sola persona o grupo sin limitaciones constitucionales. No hay elecciones libres, se reprime la oposición y los derechos son restringidos. Puede ser militar (junta militar) o civil (partido único). Ejemplos: Corea del Norte, Venezuela (debatido), Bielorrusia. Fue frecuente en América Latina en el siglo XX.</p></div>
+      </div>
+      <div class="pillar po" onclick="togglePillar(this)">
+        <div class="pillar-header"><span class="pillar-icon">📖</span><span class="pillar-title">Teocracia</span><span class="pillar-arrow">▾</span></div>
+        <div class="pillar-body"><p>El poder político está basado en principios religiosos. Los líderes religiosos gobiernan el Estado o tienen influencia decisiva en las leyes. Ejemplo: Irán (el Ayatolá tiene más poder que el presidente), Arabia Saudita (la ley islámica es la ley del Estado). Opuesto al Estado laico moderno.</p></div>
+      </div>
+    </div>
+    <div>
+      <div class="info-box violet">
+        🗳️ <strong>Colombia es una República presidencialista:</strong> El Presidente es jefe de Estado Y jefe de Gobierno al mismo tiempo. Es elegido por voto popular cada 4 años. Esto es diferente al parlamentarismo (como España o Francia), donde el jefe de Gobierno (Premier o Primer Ministro) es elegido por el parlamento.
+      </div>
+      <div class="quote" style="margin-top:1rem">
+        <p class="quote-text">La soberanía reside exclusivamente en el pueblo, del cual emana el poder público. El pueblo la ejerce en forma directa o por medio de sus representantes, en los términos que la Constitución establece.</p>
+        <p class="quote-author">— Artículo 3°, Constitución Política de Colombia (1991)</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /organizacion -->
+
+<!-- ═══════════════════════════════════
+     03 — CENTRALIZACIÓN Y DESCENTRALIZACIÓN
+═══════════════════════════════════ -->
+<div class="section" id="sec-central">
+
+  <div class="sec-hero">
+    <div class="hero-badge" style="color:var(--violet);">03</div>
+    <div class="sec-hero-tag" style="color:var(--violet);border-color:rgba(157,111,255,.3);background:rgba(157,111,255,.06);">Módulo 03 · Distribución del Poder</div>
+    <h2><span style="color:var(--violet)">Centralización</span> y Descentralización</h2>
+    <div class="sec-hero-sub">¿Quién debe tomar las decisiones? ¿El gobierno central o los gobiernos locales?</div>
+    <p class="sec-hero-intro">
+      Una de las grandes preguntas de la organización política es: <strong>¿dónde debe estar el poder de decisión?</strong> ¿En el gobierno central (capitalino) o en los gobiernos locales (departamentos y municipios)? La respuesta a esta pregunta define dos modelos opuestos: la centralización y la descentralización.
+    </p>
+  </div>
+
+  <div class="sec-title">Centralización vs. Descentralización</div>
+  <div class="vs-wrap">
+    <div class="vs-col">
+      <div class="vs-header blue">
+        <div class="vs-title" style="color:var(--accent)">🏛️ CENTRALIZACIÓN</div>
+        <div class="vs-sub">El poder en el gobierno nacional</div>
+      </div>
+      <div class="vs-item"><strong>Definición</strong> El gobierno central concentra las decisiones más importantes. Los gobiernos locales tienen poco poder propio y dependen del centro.</div>
+      <div class="vs-item"><strong>Toma de decisiones</strong> La capital decide: qué se hace en todo el país, cómo se gastan los recursos, qué leyes aplican en cada región.</div>
+      <div class="vs-item"><strong>Uniformidad</strong> Las mismas políticas para todo el país. Ventaja: igualdad. Desventaja: no considera las diferencias regionales.</div>
+      <div class="vs-item"><strong>Riesgo principal</strong> El gobierno central puede estar lejos de los problemas locales y no conocer las necesidades reales de cada región.</div>
+      <div class="vs-item"><strong>Ejemplo histórico</strong> Francia bajo Napoleón: todos los departamentos respondían directamente a París. Colombia antes de la Constitución de 1991.</div>
+    </div>
+    <div class="vs-sep">
+      <div class="vs-sep-line"></div>
+      <div class="vs-sep-dot">VS</div>
+      <div class="vs-sep-line"></div>
+    </div>
+    <div class="vs-col">
+      <div class="vs-header green">
+        <div class="vs-title" style="color:var(--green)">🏘️ DESCENTRALIZACIÓN</div>
+        <div class="vs-sub">El poder repartido entre las regiones</div>
+      </div>
+      <div class="vs-item"><strong>Definición</strong> Se transfieren poderes, funciones y recursos del gobierno central a los gobiernos locales (departamentos, municipios).</div>
+      <div class="vs-item"><strong>Toma de decisiones</strong> Los gobernadores y alcaldes tienen autonomía real para decidir sobre temas locales según las necesidades de su región.</div>
+      <div class="vs-item"><strong>Flexibilidad</strong> Cada región puede adaptar las políticas a su realidad. Ventaja: responde mejor a necesidades locales. Desventaja: puede generar desigualdad.</div>
+      <div class="vs-item"><strong>Riesgo principal</strong> Puede generar corrupción local, desigualdad entre regiones ricas y pobres, y fragmentación del Estado.</div>
+      <div class="vs-item"><strong>Ejemplo actual</strong> Colombia después de 1991: los municipios reciben regalías y transferencias del Estado y tienen autonomía para invertirlas según sus prioridades.</div>
+    </div>
+  </div>
+
+  <div class="sec-title">Tipos de Descentralización</div>
+  <div class="g3" style="margin-bottom:2rem">
+    <div class="card ca">
+      <div class="card-icon">🗳️</div>
+      <div class="card-label">Tipo 1</div>
+      <h3>Descentralización Política</h3>
+      <p>Los ciudadanos eligen directamente a sus gobernantes locales: alcaldes y gobernadores. En Colombia esto comenzó en 1988 con la elección popular de alcaldes.</p>
+      <div class="card-expand"><p>Antes de 1988, en Colombia los alcaldes eran nombrados directamente por el Presidente de la República. La elección popular de alcaldes fue una gran reforma democrática que acercó el poder al ciudadano. Actualmente, los colombianos elegimos alcalde cada 4 años.</p></div>
+      <button class="toggle-btn" onclick="toggleCard(this)">VER MÁS ▾</button>
+    </div>
+    <div class="card cg">
+      <div class="card-icon">📋</div>
+      <div class="card-label">Tipo 2</div>
+      <h3>Descentralización Administrativa</h3>
+      <p>Se transfieren funciones y competencias del gobierno central a los gobiernos locales. Los municipios se encargan de servicios como acueducto, alcantarillado y vías locales.</p>
+      <div class="card-expand"><p>Por ejemplo, antes el gobierno nacional construía todas las escuelas de Colombia. Con la descentralización, los municipios y departamentos tienen la responsabilidad de construir y mantener los colegios en su territorio. Esto se llama "descentralización de competencias".</p></div>
+      <button class="toggle-btn" onclick="toggleCard(this)">VER MÁS ▾</button>
+    </div>
+    <div class="card cv">
+      <div class="card-icon">💰</div>
+      <div class="card-label">Tipo 3</div>
+      <h3>Descentralización Fiscal</h3>
+      <p>Los gobiernos locales reciben recursos propios (impuestos locales) y transferencias del gobierno central (Sistema General de Participaciones) para financiar sus gastos.</p>
+      <div class="card-expand"><p>En Colombia, el Sistema General de Participaciones (SGP) transfiere billones de pesos anuales a municipios y departamentos para financiar educación, salud y agua potable. Las regiones con petróleo o minería también reciben "regalías". El manejo de estos recursos es el mayor reto de la descentralización fiscal.</p></div>
+      <button class="toggle-btn" onclick="toggleCard(this)">VER MÁS ▾</button>
+    </div>
+  </div>
+
+  <div class="sec-title">La Descentralización en Colombia — Línea del Tiempo</div>
+  <div class="timeline" style="margin-bottom:2rem">
+    <div class="tl-item" onclick="this.classList.toggle('open')">
+      <span class="tl-arr">▾</span>
+      <div class="tl-year">1886</div>
+      <div class="tl-title">Constitución Centralista</div>
+      <div class="tl-desc">La Constitución de 1886 creó uno de los Estados más centralistas de América Latina. Todo el poder en Bogotá.</div>
+      <div class="tl-expand">El Presidente nombraba directamente a los gobernadores, quienes a su vez nombraban a los alcaldes. Los municipios no tenían autonomía ni recursos propios. La Iglesia Católica tenía un papel oficial en el Estado. Este modelo centralista duró más de 100 años.</div>
+    </div>
+    <div class="tl-item" onclick="this.classList.toggle('open')">
+      <span class="tl-arr">▾</span>
+      <div class="tl-year">1986</div>
+      <div class="tl-title">Acto Legislativo — Elección de Alcaldes</div>
+      <div class="tl-desc">Primera gran reforma descentralizadora: se aprueba la elección popular de alcaldes a partir de 1988.</div>
+      <div class="tl-expand">Este fue un cambio histórico. Por primera vez en Colombia, los ciudadanos elegirían directamente a sus alcaldes, en lugar de que fueran nombrados por el gobierno nacional. La primera elección popular de alcaldes fue en 1988. Fue el primer paso hacia la descentralización política.</div>
+    </div>
+    <div class="tl-item" onclick="this.classList.toggle('open')">
+      <span class="tl-arr">▾</span>
+      <div class="tl-year">1991</div>
+      <div class="tl-title">Nueva Constitución — Colombia descentralizada</div>
+      <div class="tl-desc">La Constitución de 1991 consagró la descentralización como principio fundamental del Estado colombiano.</div>
+      <div class="tl-expand">El artículo 1° define a Colombia como "república unitaria, descentralizada, con autonomía de sus entidades territoriales". Se crearon los departamentos, municipios y territorios indígenas como entidades territoriales con autonomía. Se estableció el Sistema General de Participaciones para transferir recursos a los territorios. Se reconoció la diversidad étnica y cultural.</div>
+    </div>
+    <div class="tl-item" onclick="this.classList.toggle('open')">
+      <span class="tl-arr">▾</span>
+      <div class="tl-year">1995–2000</div>
+      <div class="tl-title">Transferencias y Regalías</div>
+      <div class="tl-desc">Se consolidan los mecanismos de transferencia de recursos a municipios y departamentos.</div>
+      <div class="tl-expand">Las transferencias del gobierno central a los municipios crecieron significativamente. Sin embargo, surgieron problemas: corrupción en el manejo de los recursos, clientelismo y diferencias enormes entre municipios ricos (con regalías petroleras) y municipios pobres. El reto de la descentralización sigue siendo garantizar que los recursos lleguen bien a los ciudadanos.</div>
+    </div>
+    <div class="tl-item" onclick="this.classList.toggle('open')">
+      <span class="tl-arr">▾</span>
+      <div class="tl-year">2011</div>
+      <div class="tl-title">Reforma al Sistema de Regalías</div>
+      <div class="tl-desc">Se redistribuyen las regalías más equitativamente entre todos los departamentos, no solo los productores.</div>
+      <div class="tl-expand">Antes de 2011, solo los departamentos con petróleo, carbón o minerales recibían regalías (dinero por la explotación de recursos naturales). Esto generó enorme desigualdad: Casanare y Meta eran muy ricos mientras Chocó o Vichada no recibían nada. La reforma creó el Fondo de Ciencia y Tecnología y distribuyó las regalías a todos los territorios según criterios de pobreza y necesidades.</div>
+    </div>
+  </div>
+
+  <div class="sec-title">Ventajas y Desafíos de la Descentralización</div>
+  <div class="g2">
+    <div class="card cg">
+      <div class="card-icon">✅</div>
+      <h3>Ventajas de la Descentralización</h3>
+      <ul style="padding-left:1.2rem;margin-top:.5rem">
+        <li style="font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:.3rem">Mayor participación ciudadana: el ciudadano puede influir más fácilmente en su alcalde que en el Presidente.</li>
+        <li style="font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:.3rem">Las decisiones se toman más cerca del problema real.</li>
+        <li style="font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:.3rem">Permite adaptar las políticas a las necesidades específicas de cada región.</li>
+        <li style="font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:.3rem">Reduce la carga administrativa del gobierno central.</li>
+        <li style="font-size:.88rem;color:var(--text2);line-height:1.7">Fortalece la democracia local y la rendición de cuentas.</li>
+      </ul>
+    </div>
+    <div class="card cr">
+      <div class="card-icon">⚠️</div>
+      <h3>Desafíos y Riesgos</h3>
+      <ul style="padding-left:1.2rem;margin-top:.5rem">
+        <li style="font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:.3rem">Corrupción: los recursos locales son vulnerables al clientelismo y la corrupción política.</li>
+        <li style="font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:.3rem">Desigualdad entre regiones: municipios con más recursos vs. municipios pobres.</li>
+        <li style="font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:.3rem">Capacidad técnica: muchos municipios pequeños no tienen profesionales para gestionar bien sus recursos.</li>
+        <li style="font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:.3rem">Fragmentación: si cada región hace "lo suyo", puede perderse la coherencia nacional.</li>
+        <li style="font-size:.88rem;color:var(--text2);line-height:1.7">Captura por grupos armados o políticos corruptos.</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /central -->
+
+<!-- ═══════════════════════════════════
+     04 — TERRITORIO–PODER–CIUDADANÍA
+═══════════════════════════════════ -->
+<div class="section" id="sec-triada">
+
+  <div class="sec-hero">
+    <div class="hero-badge" style="color:var(--orange);">04</div>
+    <div class="sec-hero-tag" style="color:var(--orange);border-color:rgba(240,132,58,.3);background:rgba(240,132,58,.06);">Módulo 04 · La Tríada Fundamental</div>
+    <h2>Territorio — Poder — <span style="color:var(--orange)">Ciudadanía</span></h2>
+    <div class="sec-hero-sub">La relación que define la vida política de toda sociedad</div>
+    <p class="sec-hero-intro">
+      Territorio, poder y ciudadanía forman una <strong>tríada inseparable</strong>. El territorio es el escenario donde se ejerce el poder; el poder define quién puede habitar, usar y transformar el territorio; y la ciudadanía es la forma en que los habitantes participan o son excluidos de las decisiones políticas. Entender esta relación es clave para comprender la política.
+    </p>
+  </div>
+
+  <div class="sec-title">La Tríada: ¿Cómo se relacionan?</div>
+  <div class="triangle-wrap">
+    <svg class="triangle-svg" viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#4a9eff" opacity=".7"/>
+        </marker>
+        <marker id="arrg" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#3dba7a" opacity=".7"/>
+        </marker>
+        <marker id="arro" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#f0843a" opacity=".7"/>
+        </marker>
+      </defs>
+      <!-- Triangle lines -->
+      <line x1="240" y1="30" x2="60" y2="260" stroke="#4a9eff" stroke-width="1.5" stroke-dasharray="6,4" opacity=".5"/>
+      <line x1="240" y1="30" x2="420" y2="260" stroke="#3dba7a" stroke-width="1.5" stroke-dasharray="6,4" opacity=".5"/>
+      <line x1="60" y1="260" x2="420" y2="260" stroke="#f0843a" stroke-width="1.5" stroke-dasharray="6,4" opacity=".5"/>
+      <!-- Arrow labels on sides -->
+      <text x="115" y="155" font-family="JetBrains Mono" font-size="10" fill="#4a9eff" opacity=".8" transform="rotate(-53,115,155)">El poder delimita</text>
+      <text x="340" y="130" font-family="JetBrains Mono" font-size="10" fill="#3dba7a" opacity=".8" transform="rotate(53,340,130)">La ciudadanía ocupa</text>
+      <text x="190" y="275" font-family="JetBrains Mono" font-size="10" fill="#f0843a" opacity=".8">El territorio articula</text>
+      <!-- Nodes -->
+      <circle cx="240" cy="30" r="36" fill="rgba(74,158,255,.12)" stroke="#4a9eff" stroke-width="1.5"/>
+      <text x="240" y="26" font-family="Syne" font-size="12" font-weight="800" fill="#4a9eff" text-anchor="middle">PODER</text>
+      <text x="240" y="42" font-family="Lora" font-size="9" fill="#8b9ab0" text-anchor="middle" font-style="italic">¿Quién decide?</text>
+      <circle cx="60" cy="260" r="38" fill="rgba(240,132,58,.12)" stroke="#f0843a" stroke-width="1.5"/>
+      <text x="60" y="254" font-family="Syne" font-size="11" font-weight="800" fill="#f0843a" text-anchor="middle">CIUDADANÍA</text>
+      <text x="60" y="270" font-family="Lora" font-size="9" fill="#8b9ab0" text-anchor="middle" font-style="italic">¿Quién participa?</text>
+      <circle cx="420" cy="260" r="38" fill="rgba(61,186,122,.12)" stroke="#3dba7a" stroke-width="1.5"/>
+      <text x="420" y="254" font-family="Syne" font-size="11" font-weight="800" fill="#3dba7a" text-anchor="middle">TERRITORIO</text>
+      <text x="420" y="270" font-family="Lora" font-size="9" fill="#8b9ab0" text-anchor="middle" font-style="italic">¿Dónde se vive?</text>
+    </svg>
+    <div class="triangle-nodes">
+      <div class="tri-node">
+        <div class="tri-node-title" style="color:var(--accent)">🏛️ PODER</div>
+        <p>Define quién puede tomar decisiones sobre el territorio: quién puede construir, dónde se pueden instalar empresas, qué grupos tienen más derechos. El poder puede ser legítimo (democrático) o impuesto por la fuerza.</p>
+      </div>
+      <div class="tri-node">
+        <div class="tri-node-title" style="color:var(--orange)">👤 CIUDADANÍA</div>
+        <p>Es el conjunto de derechos y deberes que tienen las personas respecto al Estado y al territorio. Define quién pertenece a la comunidad política, quién puede votar y quién es excluido.</p>
+      </div>
+      <div class="tri-node">
+        <div class="tri-node-title" style="color:var(--green)">🗺️ TERRITORIO</div>
+        <p>No es solo tierra: es el espacio donde se construyen las identidades, se disputan los recursos y se ejerce o niega la ciudadanía. El territorio puede ser incluyente o excluyente según quien tenga el poder.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">¿Qué es la Ciudadanía?</div>
+  <div class="g2" style="margin-bottom:2rem">
+    <div class="pillars">
+      <div class="pillar pa" onclick="togglePillar(this)">
+        <div class="pillar-header"><span class="pillar-icon">📜</span><span class="pillar-title">Ciudadanía Civil</span><span class="pillar-arrow">▾</span></div>
+        <div class="pillar-body"><p>Los derechos necesarios para la libertad individual: libertad de expresión, de religión, de propiedad y la igualdad ante la ley. Son los más básicos y los primeros en conquistarse históricamente. Sin estos derechos, no hay ciudadanía verdadera.</p></div>
+      </div>
+      <div class="pillar pg" onclick="togglePillar(this)">
+        <div class="pillar-header"><span class="pillar-icon">🗳️</span><span class="pillar-title">Ciudadanía Política</span><span class="pillar-arrow">▾</span></div>
+        <div class="pillar-body"><p>El derecho a participar en la vida política: votar, ser elegido, hacer parte de partidos y organizaciones políticas. Históricamente fue negada a mujeres (hasta el siglo XX), a las personas sin propiedad y a grupos étnicos. En Colombia las mujeres votaron por primera vez en 1954.</p></div>
+      </div>
+      <div class="pillar pv" onclick="togglePillar(this)">
+        <div class="pillar-header"><span class="pillar-icon">🏥</span><span class="pillar-title">Ciudadanía Social</span><span class="pillar-arrow">▾</span></div>
+        <div class="pillar-body"><p>El derecho a un nivel mínimo de bienestar y seguridad: educación, salud, trabajo digno, vivienda. Es el fundamento del "Estado Social de Derecho". Sin estos derechos básicos garantizados, la participación política es muy difícil. Una persona que pasa hambre tiene pocas posibilidades de ejercer su ciudadanía plena.</p></div>
+      </div>
+      <div class="pillar po" onclick="togglePillar(this)">
+        <div class="pillar-header"><span class="pillar-icon">🌿</span><span class="pillar-title">Ciudadanía Ambiental</span><span class="pillar-arrow">▾</span></div>
+        <div class="pillar-body"><p>El derecho a un ambiente sano y la responsabilidad de protegerlo. En Colombia, el artículo 79 de la Constitución garantiza el derecho a un ambiente sano. Los ciudadanos y comunidades pueden demandar al Estado o a empresas que contaminen o destruyan el territorio.</p></div>
+      </div>
+    </div>
+    <div>
+      <div class="info-box orange">
+        🧑‍🤝‍🧑 <strong>¿Sabías que?</strong> En Colombia, la ciudadanía se adquiere a los 18 años con la cédula de ciudadanía. Antes de esa edad eres "menor" con derechos, pero sin derecho al voto. Sin embargo, la Constitución te da otros mecanismos de participación como el Consejo Estudiantil, el personero escolar y el veedurías ciudadanas.
+      </div>
+      <div class="card co" style="margin-top:1rem">
+        <div class="card-icon">🔍</div>
+        <div class="card-label">Concepto clave</div>
+        <h3>Mecanismos de Participación Ciudadana</h3>
+        <p>La Constitución de 1991 creó varios mecanismos para que los ciudadanos participen más allá del voto:</p>
+        <div class="card-expand"><p><strong>Voto:</strong> Elección de gobernantes. <strong>Plebiscito:</strong> El pueblo vota sobre una decisión política del gobierno. <strong>Referendo:</strong> Los ciudadanos votan para aprobar o derogar una ley. <strong>Consulta popular:</strong> El gobernante pregunta a los ciudadanos. <strong>Cabildo abierto:</strong> Reunión pública para discutir temas locales. <strong>Iniciativa legislativa:</strong> Los ciudadanos pueden proponer leyes al Congreso. <strong>Revocatoria de mandato:</strong> Los ciudadanos pueden revocar el mandato de un alcalde o gobernador.</p></div>
+        <button class="toggle-btn" onclick="toggleCard(this)">VER MÁS ▾</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">Territorio, Poder y Exclusión — El Lado Oscuro</div>
+  <div class="info-box orange" style="margin-bottom:1.5rem">
+    ⚠️ <strong>Atención:</strong> La relación territorio-poder no siempre es justa. A lo largo de la historia y aún hoy, el poder ha usado el territorio para excluir a grupos enteros de sus derechos.
+  </div>
+  <div class="g3" style="margin-bottom:2rem">
+    <div class="card cr">
+      <div class="card-icon">🌎</div>
+      <div class="card-label">Caso Histórico</div>
+      <h3>Colonialismo y Desposesión</h3>
+      <p>Durante siglos, las potencias europeas tomaron el control del territorio de pueblos indígenas y africanos, negándoles su ciudadanía y sus derechos. El territorio como instrumento de dominación.</p>
+      <div class="card-expand"><p>En Colombia, la conquista española despojó a los pueblos indígenas de sus territorios ancestrales. La encomienda y luego el resguardo fueron formas de control territorial sobre las comunidades indígenas. Hoy, la Constitución de 1991 reconoce los territorios colectivos de comunidades indígenas y afrocolombianas, pero el conflicto por la tierra sigue siendo uno de los problemas más graves del país.</p></div>
+      <button class="toggle-btn" onclick="toggleCard(this)">VER MÁS ▾</button>
+    </div>
+    <div class="card co">
+      <div class="card-icon">🚜</div>
+      <div class="card-label">Caso Colombia</div>
+      <h3>Conflicto Armado y Territorio</h3>
+      <p>En Colombia, el conflicto armado estuvo muy ligado al control del territorio. Guerrillas, paramilitares y narco-traficantes disputaron regiones enteras, desplazando a millones de campesinos.</p>
+      <div class="card-expand"><p>El desplazamiento forzado fue una de las peores consecuencias del conflicto: más de 7 millones de colombianos fueron obligados a abandonar sus territorios. Las comunidades sin tierra no pueden ejercer su ciudadanía plena. El Acuerdo de Paz de 2016 incluyó la "reforma rural integral" como su primer punto, reconociendo que la disputa por la tierra es el corazón del conflicto colombiano.</p></div>
+      <button class="toggle-btn" onclick="toggleCard(this)">VER MÁS ▾</button>
+    </div>
+    <div class="card cv">
+      <div class="card-icon">🏙️</div>
+      <div class="card-label">Caso Urbano</div>
+      <h3>Segregación Urbana</h3>
+      <p>En las ciudades, el poder decide quién vive dónde. Los barrios pobres tienen menos servicios, peor infraestructura y más inseguridad. El territorio urbano reproduce la desigualdad social.</p>
+      <div class="card-expand"><p>En Bogotá, Medellín o Barranquilla, la estrato-ficación socioeconómica (estratos 1 al 6) refleja cómo el territorio está dividido por clases sociales. Los barrios de estrato 1 y 2 históricamente tuvieron menos parques, peores calles, menos hospitales y colegios. Proyectos como el Metro de Medellín y los cables aéreos en barrios populares buscan reducir esta brecha territorial de ciudadanía.</p></div>
+      <button class="toggle-btn" onclick="toggleCard(this)">VER MÁS ▾</button>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sec-title">Control Ciudadano del Poder — ¿Cómo vigilamos al Estado?</div>
+  <div class="phases" id="control-ciudadano">
+    <div class="phase p1" onclick="togglePhase(this)">
+      <div class="phase-header">
+        <div class="phase-badge">1</div>
+        <div class="phase-info">
+          <div class="phase-title">Organismos de Control del Estado</div>
+          <div class="phase-sub">Contraloría, Procuraduría y Defensoría del Pueblo</div>
+        </div>
+        <span class="phase-arrow">▾</span>
+      </div>
+      <div class="phase-body"><div class="phase-body-inner">
+        <ul>
+          <li><strong>Contraloría General de la República:</strong> Vigila que el dinero público se use bien. Audita a las entidades del Estado.</li>
+          <li><strong>Procuraduría General de la Nación:</strong> Investiga y sanciona a los funcionarios públicos que violen la ley o la Constitución.</li>
+          <li><strong>Defensoría del Pueblo:</strong> Protege los derechos fundamentales de los ciudadanos. Cualquier persona puede acudir a ella si sus derechos son violados.</li>
+        </ul>
+      </div></div>
+    </div>
+    <div class="phase p2" onclick="togglePhase(this)">
+      <div class="phase-header">
+        <div class="phase-badge">2</div>
+        <div class="phase-info">
+          <div class="phase-title">Acción de Tutela — El arma del ciudadano</div>
+          <div class="phase-sub">El mecanismo más usado en Colombia para proteger derechos</div>
+        </div>
+        <span class="phase-arrow">▾</span>
+      </div>
+      <div class="phase-body"><div class="phase-body-inner">
+        <p>La acción de tutela (Art. 86 de la Constitución) permite a cualquier ciudadano pedir a un juez la protección inmediata de un derecho fundamental que esté siendo violado. El juez tiene 10 días para responder. Es gratuita, no necesita abogado y cualquier persona la puede presentar.</p>
+        <ul>
+          <li>Colombia tiene uno de los mecanismos de tutela más usados del mundo.</li>
+          <li>Se han ganado tutelas para el derecho a la salud, a la educación, al nombre, al trabajo y muchos más.</li>
+          <li>Es un ejemplo de cómo la ciudadanía puede ejercer control real sobre el poder.</li>
+        </ul>
+      </div></div>
+    </div>
+    <div class="phase p3" onclick="togglePhase(this)">
+      <div class="phase-header">
+        <div class="phase-badge">3</div>
+        <div class="phase-info">
+          <div class="phase-title">Veedurías Ciudadanas y Sociedad Civil</div>
+          <div class="phase-sub">La participación más allá del voto</div>
+        </div>
+        <span class="phase-arrow">▾</span>
+      </div>
+      <div class="phase-body"><div class="phase-body-inner">
+        <p>Los ciudadanos pueden organizarse en veedurías ciudadanas para vigilar la ejecución de contratos y obras del Estado. También existe la sociedad civil: ONG, universidades, medios de comunicación y comunidades que presionan al Estado y denuncian irregularidades.</p>
+        <ul>
+          <li>Las veedurías pueden revisar licitaciones, contratos de obras públicas y el gasto de recursos públicos.</li>
+          <li>El libre acceso a la información pública (Ley de Transparencia) permite a los ciudadanos pedir cualquier documento del Estado.</li>
+          <li>Las redes sociales se han convertido en un nuevo espacio de control ciudadano al poder.</li>
+        </ul>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="quote" style="margin-top:2rem">
+    <p class="quote-text">El territorio no es solo el espacio que habitamos. Es también el espacio que nos habita a nosotros, que moldea nuestra identidad, nuestras posibilidades y nuestros derechos como ciudadanos.</p>
+    <p class="quote-author">— Adaptado del geógrafo Milton Santos, "La Naturaleza del Espacio" (1996)</p>
+  </div>
+
+</div><!-- /triada -->
+
+<!-- ═══════════════════════════════════
+     05 — EVALUACIÓN
+═══════════════════════════════════ -->
+<div class="section" id="sec-quiz">
+
+  <div class="sec-hero">
+    <div class="hero-badge" style="color:var(--gold);">★</div>
+    <div class="sec-hero-tag" style="color:var(--gold);border-color:rgba(232,194,68,.3);background:rgba(232,194,68,.06);">Evaluación Formativa</div>
+    <h2>Evaluación <span style="color:var(--gold)">Final</span></h2>
+    <div class="sec-hero-sub">12 preguntas · Territorio y Estado · Ciencias Sociales</div>
+    <p class="sec-hero-intro">Responde con atención. Cada pregunta tiene una explicación para que puedas aprender de los errores. ¡Puedes intentarlo las veces que quieras!</p>
+  </div>
+
+  <div class="quiz-box">
+    <div id="quiz-area">
+      <div class="qprog">
+        <div class="qbar"><div class="qbar-fill" id="qfill" style="width:0%"></div></div>
+        <span class="qlabel" id="qlabel">Pregunta 1 de 12</span>
+      </div>
+      <div class="qnum-tag" id="qnum-tag">MÓDULO · PREGUNTA 1</div>
+      <div class="qtext" id="qtext"></div>
+      <div class="qopts" id="qopts"></div>
+      <div class="qfb" id="qfb"></div>
+      <button class="qnext" id="qnext" onclick="nextQ()">SIGUIENTE PREGUNTA →</button>
+    </div>
+    <div class="qfinal" id="qfinal">
+      <div style="font-size:3rem;margin-bottom:.5rem">🏛️</div>
+      <div class="qf-score" id="qf-score"></div>
+      <div class="qf-rank" id="qf-rank"></div>
+      <div class="qf-msg" id="qf-msg"></div>
+      <button class="qf-retry" onclick="resetQuiz()">↺ REINTENTAR EVALUACIÓN</button>
+    </div>
+  </div>
+
+</div><!-- /quiz -->
+
+</div><!-- /canvas -->
+
+<!-- TRACKER -->
+<div class="tracker" id="tracker">PUNTOS<span id="pts">0</span></div>
+
+<script>
+// ─────────────────────────────────────
+// NAV
+// ─────────────────────────────────────
+let pts = 0;
+function goSec(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+function addPts(n) {
+  pts += n;
+  const t = document.getElementById('tracker');
+  t.style.display = 'block';
+  document.getElementById('pts').textContent = pts;
+  t.style.borderColor = '#4a9eff';
+  t.style.boxShadow = '0 0 15px rgba(74,158,255,.4)';
+  setTimeout(() => { t.style.borderColor = ''; t.style.boxShadow = ''; }, 500);
+}
+
+// ─────────────────────────────────────
+// TOGGLES
+// ─────────────────────────────────────
+function togglePillar(el) {
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) addPts(2);
+}
+function toggleCard(btn) {
+  const ex = btn.previousElementSibling;
+  const open = ex.classList.toggle('open');
+  btn.textContent = open ? 'VER MENOS ▴' : 'VER MÁS ▾';
+  if (open) addPts(3);
+}
+function togglePhase(el) {
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) addPts(3);
+}
+document.querySelectorAll('.tl-item').forEach(el => {
+  el.addEventListener('click', () => { if (el.classList.contains('open')) addPts(1); });
+});
+
+// ─────────────────────────────────────
+// QUIZ
+// ─────────────────────────────────────
+const quizData = [
+  {
+    module: 'Territorio y Estado',
+    q: '¿Cuáles son los tres elementos esenciales que debe tener un Estado para existir?',
+    opts: ['Ejército, moneda y bandera', 'Territorio, población y gobierno', 'Constitución, parlamento y presidente', 'Capital, idioma y religión'],
+    c: 1,
+    exp: 'Un Estado necesita tres elementos inseparables: territorio (espacio físico con fronteras reconocidas), población (personas que lo habitan) y gobierno (estructura de poder que lo dirige). Sin cualquiera de los tres, no hay Estado.'
+  },
+  {
+    module: 'Territorio y Estado',
+    q: '¿Cuál es la diferencia principal entre "Nación" y "Estado"?',
+    opts: ['Son exactamente lo mismo, sinónimos perfectos', 'El Estado es geográfico y la Nación es política', 'La Nación es una comunidad cultural, el Estado es la organización política sobre un territorio', 'El Estado es más grande que la Nación'],
+    c: 2,
+    exp: 'La Nación es una comunidad unida por lazos culturales (idioma, historia, tradiciones) y puede existir sin Estado propio. El Estado es la organización política y jurídica sobre un territorio. Pueden no coincidir: hay naciones sin Estado y Estados con varias naciones.'
+  },
+  {
+    module: 'Territorio y Estado',
+    q: 'Según el artículo 3° de la Constitución colombiana, ¿en quién reside la soberanía?',
+    opts: ['En el Presidente de la República', 'En el Congreso de la República', 'En las Fuerzas Militares', 'Exclusivamente en el pueblo'],
+    c: 3,
+    exp: 'El Art. 3° de la Constitución colombiana establece que "La soberanía reside exclusivamente en el pueblo, del cual emana el poder público." Esto es el principio de soberanía popular, base de la democracia.'
+  },
+  {
+    module: 'Organización Política',
+    q: '¿Qué forma de Estado tiene Colombia según su Constitución de 1991?',
+    opts: ['Estado Federal', 'Estado Confederal', 'República unitaria, descentralizada con autonomía de sus entidades territoriales', 'Monarquía constitucional'],
+    c: 2,
+    exp: 'El artículo 1° de la Constitución define a Colombia como "Estado social de derecho, organizado en forma de república unitaria, descentralizada, con autonomía de sus entidades territoriales, democrática, participativa y pluralista".'
+  },
+  {
+    module: 'Organización Política',
+    q: '¿Cuál es la diferencia entre un Estado Unitario y un Estado Federal?',
+    opts: ['En el Estado Unitario hay más departamentos que en el Federal', 'En el Estado Federal el poder está concentrado en el centro; en el Unitario está repartido', 'En el Estado Unitario el poder está concentrado en el gobierno central; en el Federal se reparte entre el gobierno nacional y los estados o provincias', 'No hay ninguna diferencia importante'],
+    c: 2,
+    exp: 'En el Estado Unitario (como Colombia o Francia), hay un solo gobierno central que dirige todo el país. En el Estado Federal (como EE.UU., Alemania o Brasil), el poder se divide entre el gobierno federal y los estados o provincias, que tienen constituciones y parlamentos propios.'
+  },
+  {
+    module: 'Organización Política',
+    q: '¿Cuántas ramas tiene el poder público en Colombia y cuáles son?',
+    opts: ['Dos: el gobierno y la oposición', 'Cuatro: ejecutiva, legislativa, judicial y electoral', 'Tres: legislativa, ejecutiva y judicial', 'Cinco: presidencial, parlamentaria, judicial, militar y eclesial'],
+    c: 2,
+    exp: 'El artículo 113 de la Constitución establece que son ramas del poder público: la Legislativa (Congreso), la Ejecutiva (Presidente y ministros) y la Judicial (Cortes y jueces). Esta separación evita que una sola persona acumule todo el poder.'
+  },
+  {
+    module: 'Centralización y Descentralización',
+    q: '¿En qué año se aprobó en Colombia la elección popular de alcaldes, primer gran paso hacia la descentralización?',
+    opts: ['1810', '1886', '1986', '2000'],
+    c: 2,
+    exp: 'En 1986 se aprobó el Acto Legislativo que estableció la elección popular de alcaldes a partir de 1988. Antes de esta reforma, los alcaldes eran nombrados directamente por el Presidente de la República. Fue la primera gran reforma descentralizadora de Colombia.'
+  },
+  {
+    module: 'Centralización y Descentralización',
+    q: '¿Cuál es el principal riesgo o desafío de la descentralización en Colombia?',
+    opts: ['Que el gobierno central se quede sin trabajo', 'Que los municipios se vuelvan demasiado poderosos y declaren la independencia', 'La corrupción local en el manejo de los recursos transferidos y la desigualdad entre regiones ricas y pobres', 'Que desaparezcan los departamentos'],
+    c: 2,
+    exp: 'El principal reto de la descentralización colombiana es la corrupción local: los recursos del Sistema General de Participaciones y las regalías son vulnerables al clientelismo. Además, hay enormes desigualdades entre municipios con recursos (con petróleo o minería) y municipios pobres sin fuentes propias de ingresos.'
+  },
+  {
+    module: 'Centralización y Descentralización',
+    q: '¿Qué transfiere la descentralización fiscal a los gobiernos locales?',
+    opts: ['El ejército y la policía nacional', 'Recursos económicos y competencias para que los gobiernos locales presten servicios', 'La administración de la política exterior', 'El control del sistema bancario'],
+    c: 1,
+    exp: 'La descentralización fiscal transfiere recursos económicos (a través del Sistema General de Participaciones y regalías) y competencias (educación, salud, agua potable) a los departamentos y municipios, para que puedan prestar servicios directamente a sus ciudadanos.'
+  },
+  {
+    module: 'Territorio–Poder–Ciudadanía',
+    q: '¿Qué mecanismo constitucional permite a cualquier ciudadano colombiano pedir a un juez la protección inmediata de sus derechos fundamentales?',
+    opts: ['El plebiscito', 'La acción de tutela (Art. 86)', 'La revocatoria de mandato', 'El referendo constitucional'],
+    c: 1,
+    exp: 'La acción de tutela, creada por el artículo 86 de la Constitución de 1991, permite a cualquier ciudadano solicitar a un juez la protección inmediata de sus derechos fundamentales. El juez tiene 10 días para responder, es gratuita y no requiere abogado. Es uno de los mecanismos de control ciudadano más poderosos de América Latina.'
+  },
+  {
+    module: 'Territorio–Poder–Ciudadanía',
+    q: '¿Cuáles son los tres tipos de ciudadanía según el sociólogo T.H. Marshall?',
+    opts: ['Nacional, regional y local', 'Económica, política y religiosa', 'Civil (libertades individuales), política (derechos de participación) y social (derechos de bienestar)', 'Pública, privada y mixta'],
+    c: 2,
+    exp: 'T.H. Marshall identificó tres dimensiones de la ciudadanía: civil (derechos como libertad de expresión, igualdad ante la ley), política (derecho a votar y ser elegido) y social (derecho a educación, salud, trabajo digno). Las tres son necesarias para una ciudadanía plena.'
+  },
+  {
+    module: 'Territorio–Poder–Ciudadanía',
+    q: '¿Cómo se relacionan el conflicto armado colombiano y el territorio?',
+    opts: ['No tienen relación, son fenómenos independientes', 'El conflicto se concentró en las ciudades grandes exclusivamente', 'El control del territorio fue el eje del conflicto: guerrillas, paramilitares y narcotraficantes disputaron regiones causando desplazamiento forzado de millones de personas', 'El conflicto fue exclusivamente por diferencias religiosas'],
+    c: 2,
+    exp: 'El conflicto armado colombiano estuvo profundamente ligado al control territorial. Más de 7 millones de personas fueron desplazadas forzosamente de sus territorios. El Acuerdo de Paz de 2016 incluyó como primer punto la "reforma rural integral", reconociendo que la disputa por la tierra es el corazón del conflicto.'
+  },
+];
+
+let curQ = 0, score = 0, answered = false;
+
+function loadQ() {
+  answered = false;
+  const q = quizData[curQ];
+  document.getElementById('qnum-tag').textContent = `${q.module.toUpperCase()} · PREGUNTA ${curQ + 1}`;
+  document.getElementById('qtext').textContent = q.q;
+  document.getElementById('qlabel').textContent = `Pregunta ${curQ + 1} de ${quizData.length}`;
+  document.getElementById('qfill').style.width = `${(curQ / quizData.length) * 100}%`;
+  const letters = ['A', 'B', 'C', 'D'];
+  document.getElementById('qopts').innerHTML = q.opts.map((o, i) =>
+    `<button class="qopt" onclick="answerQ(${i})"><span class="qletter">${letters[i]}</span>${o}</button>`
+  ).join('');
+  document.getElementById('qfb').className = 'qfb';
+  document.getElementById('qfb').textContent = '';
+  document.getElementById('qnext').className = 'qnext';
+}
+
+function answerQ(idx) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[curQ];
+  document.querySelectorAll('.qopt').forEach(b => b.disabled = true);
+  const fb = document.getElementById('qfb');
+  if (idx === q.c) {
+    document.querySelectorAll('.qopt')[idx].classList.add('correct');
+    fb.className = 'qfb c show';
+    fb.innerHTML = `<strong>✓ ¡Correcto!</strong> ${q.exp}`;
+    score++;
+    addPts(10);
+  } else {
+    document.querySelectorAll('.qopt')[idx].classList.add('wrong');
+    document.querySelectorAll('.qopt')[q.c].classList.add('correct');
+    fb.className = 'qfb w show';
+    fb.innerHTML = `<strong>✗ Incorrecto.</strong> ${q.exp}`;
+  }
+  document.getElementById('qnext').className = 'qnext show';
+}
+
+function nextQ() {
+  curQ++;
+  if (curQ >= quizData.length) {
+    document.getElementById('quiz-area').style.display = 'none';
+    const fin = document.getElementById('qfinal');
+    fin.classList.add('show');
+    document.getElementById('qf-score').textContent = `${score}/${quizData.length}`;
+    const pct = score / quizData.length;
+    const ranks = [
+      ['CIUDADANO EN FORMACIÓN', 'Debes repasar los módulos con más cuidado. Vuelve a leer y pronto lo dominarás.'],
+      ['PARTICIPANTE ACTIVO', 'Has comprendido los conceptos básicos. Refuerza los temas donde fallaste.'],
+      ['ANALISTA POLÍTICO', '¡Buen dominio del tema! Muy cerca de la excelencia.'],
+      ['EXPERTO EN CIENCIAS POLÍTICAS', '¡Excelente! Dominas la relación entre territorio, Estado y ciudadanía.'],
+    ];
+    const r = pct < .5 ? 0 : pct < .7 ? 1 : pct < .9 ? 2 : 3;
+    document.getElementById('qf-rank').textContent = ranks[r][0];
+    document.getElementById('qf-msg').textContent = ranks[r][1];
+  } else {
+    loadQ();
+  }
+}
+
+function resetQuiz() {
+  curQ = 0; score = 0;
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('qfinal').classList.remove('show');
+  loadQ();
+}
+
+// INIT
+loadQ();
+</script>
+</body>
+</html>
